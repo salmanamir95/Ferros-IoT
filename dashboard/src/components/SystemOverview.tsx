@@ -5,20 +5,10 @@ import { Server, Activity, Users, Zap } from 'lucide-react';
 interface Props {
   events: FerrosInsight[];
   isConnected: boolean;
+  eventsPerSec: number;
 }
 
-export const SystemOverview: React.FC<Props> = ({ events, isConnected }) => {
-  const [eventsPerSec, setEventsPerSec] = useState(0);
-  const [lastCount, setLastCount] = useState(0);
-
-  // Calculate events per second roughly based on arrival rate
-  useEffect(() => {
-    const currentCount = events.length;
-    const diff = currentCount - lastCount;
-    setEventsPerSec(diff > 0 ? diff : 0);
-    setLastCount(currentCount);
-  }, [events]);
-
+export const SystemOverview: React.FC<Props> = ({ events, isConnected, eventsPerSec }) => {
   const stats = useMemo(() => {
     const uniqueProcs = new Set(events.map(e => e.identity.comm));
     

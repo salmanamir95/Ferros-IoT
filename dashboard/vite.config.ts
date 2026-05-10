@@ -4,6 +4,8 @@ import fs from 'fs'
 import path from 'path'
 
 function ferrosApiPlugin() {
+  const fileCache = new Map<string, { mtimeMs: number, data: any }>();
+
   return {
     name: 'ferros-api',
     configureServer(server: any) {
@@ -14,18 +16,27 @@ function ferrosApiPlugin() {
         // Recursive function to get all JSON files
         function walkSync(dir: string) {
           if (!fs.existsSync(dir)) return
-          const files = fs.readdirSync(dir)
-          for (const file of files) {
-            const filepath = path.join(dir, file)
-            const stat = fs.statSync(filepath)
-            if (stat.isDirectory()) {
+          const files = fs.readdirSync(dir, { withFileTypes: true })
+          
+          for (const dirent of files) {
+            const filepath = path.join(dir, dirent.name)
+            
+            if (dirent.isDirectory()) {
               walkSync(filepath)
-            } else if (file.endsWith('.json')) {
-              try {
-                const content = fs.readFileSync(filepath, 'utf-8')
-                insights.push(JSON.parse(content))
-              } catch (e) {
-                console.error(`Error parsing ${filepath}`, e)
+            } else if (dirent.name.endsWith('.json')) {
+              // If we already parsed this exact file, just serve from cache!
+              // Ferros creates immutable timestamp.json files, so we don't need to re-read or stat them.
+              if (fileCache.has(filepath)) {
+                insights.push(fileCache.get(filepath)!.data)
+              } else {
+                try {
+                  const content = fs.readFileSync(filepath, 'utf-8')
+                  const data = JSON.parse(content)
+                  fileCache.set(filepath, { mtimeMs: 0, data }) // mtime doesn't matter for immutable files
+                  insights.push(data)
+                } catch (e) {
+                  // File might be currently being written
+                }
               }
             }
           }

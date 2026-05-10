@@ -4,6 +4,7 @@ import type { FerrosInsight } from '../types/ferros';
 export function useBrokerPolling() {
   const [events, setEvents] = useState<FerrosInsight[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [eventsPerSec, setEventsPerSec] = useState(0);
   
   const knownIds = useRef<Set<string>>(new Set());
 
@@ -17,7 +18,6 @@ export function useBrokerPolling() {
         
         setEvents(prev => {
           const newEvents = data.filter(e => {
-            // Deduplicate by correlation_id AND timestamp since some ids might not be globally unique without timestamp
             const uniqueKey = `${e.correlation_id}_${e.trace.timestamp_ns}`;
             if (!knownIds.current.has(uniqueKey)) {
               knownIds.current.add(uniqueKey);
@@ -26,12 +26,14 @@ export function useBrokerPolling() {
             return false;
           });
 
+          setEventsPerSec(newEvents.length);
+
           if (newEvents.length === 0) return prev;
 
-          // Merge and sort chronologically, keep last 200 to prevent memory leaks
+          // Merge and sort chronologically, keep last 100 to prevent memory leaks and UI lag
           const merged = [...prev, ...newEvents]
             .sort((a, b) => a.trace.timestamp_ns - b.trace.timestamp_ns)
-            .slice(-200);
+            .slice(-100);
 
           // Prune knownIds to avoid massive set
           if (knownIds.current.size > 1000) {
@@ -45,6 +47,7 @@ export function useBrokerPolling() {
       } catch (err) {
         console.error('Failed to fetch broker output:', err);
         setIsConnected(false);
+        setEventsPerSec(0);
       }
     };
 
@@ -56,5 +59,5 @@ export function useBrokerPolling() {
     return () => clearInterval(intervalId);
   }, []);
 
-  return { events, isConnected };
+  return { events, isConnected, eventsPerSec };
 }

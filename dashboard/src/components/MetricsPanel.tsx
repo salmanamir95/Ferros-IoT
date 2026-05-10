@@ -26,7 +26,7 @@ export const MetricsPanel: React.FC<Props> = ({ events }) => {
     <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <h2 style={{ fontSize: '1.25rem', fontWeight: 600 }}>System Metrics Timeline</h2>
       
-      <div style={{ flex: 1, minHeight: '250px' }}>
+      <div style={{ flex: 1, minHeight: 0 }}>
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>

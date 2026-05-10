@@ -7,7 +7,7 @@ import { CorrelationExplorer } from './components/CorrelationExplorer';
 import { Hexagon } from 'lucide-react';
 
 function App() {
-  const { events, isConnected } = useBrokerPolling();
+  const { events, isConnected, eventsPerSec } = useBrokerPolling();
 
   return (
     <div className="app-container">
@@ -33,10 +33,10 @@ function App() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="main-content scroll-hidden" style={{ gridColumn: '2 / -1', gridRow: '2 / -1', paddingRight: '1rem' }}>
-        <SystemOverview events={events} isConnected={isConnected} />
+      <main className="main-content scroll-hidden" style={{ gridColumn: '2 / -1', gridRow: '2 / -1', paddingRight: '1rem', minHeight: 0 }}>
+        <SystemOverview events={events} isConnected={isConnected} eventsPerSec={eventsPerSec} />
         
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', flex: 1, minHeight: '400px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', flex: 1, minHeight: 0, overflow: 'hidden' }}>
           <MetricsPanel events={events} />
           <CorrelationExplorer events={events} />
         </div>
