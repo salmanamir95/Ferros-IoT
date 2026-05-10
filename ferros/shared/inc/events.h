@@ -58,6 +58,19 @@ struct foc_fork_payload {
 } __attribute__((packed));
 
 /**
+ * @brief Process termination event payload
+ */
+struct foc_exit_payload {
+    u32 pid;
+    u32 tgid;
+
+    s64 exit_code;
+    u32 cpu;
+
+    char comm[16];
+} __attribute__((packed));
+
+/**
  * @brief Production-Grade Event Wrapper
  */
 struct foc_event {
@@ -66,6 +79,7 @@ struct foc_event {
     union {
         struct foc_switch_payload sw;
         struct foc_fork_payload fk;
+        struct foc_exit_payload ex;
     } p;
 } __attribute__((packed, aligned(8)));
 

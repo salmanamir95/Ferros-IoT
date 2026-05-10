@@ -24,7 +24,6 @@ datasets/
 data/
 logs/
 log/
-
 research/output/
 transition_log.json
 

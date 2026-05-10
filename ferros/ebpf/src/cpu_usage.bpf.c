@@ -92,3 +92,36 @@ int handle_process_fork(struct trace_event_raw_sched_process_fork *ctx)
     bpf_ringbuf_submit(e, 0);
     return 0;
 }
+
+SEC("tracepoint/sched/sched_process_exit")
+int handle_process_exit(struct trace_event_raw_sched_process_exit *ctx)
+{
+    struct foc_event *e;
+    u64 now = bpf_ktime_get_ns();
+    u64 pid_tgid = bpf_get_current_pid_tgid();
+    u32 pid = (u32)pid_tgid;
+    u32 tgid = (u32)(pid_tgid >> 32);
+    u32 cpu = bpf_get_smp_processor_id();
+
+    e = bpf_ringbuf_reserve(&events, sizeof(*e), 0);
+    if (!e) return 0;
+
+    e->h.ts = now;
+    e->h.pid = pid;
+    e->h.tgid = tgid;
+    e->h.cpu = cpu;
+    e->h.type = EVENT_PROCESS_EXIT;
+    e->h.reserved = 0;
+
+    e->p.ex.pid = pid;
+    e->p.ex.tgid = tgid;
+    e->p.ex.cpu = cpu;
+
+    struct task_struct *task = (struct task_struct *)bpf_get_current_task();
+    e->p.ex.exit_code = BPF_CORE_READ(task, exit_code);
+
+    bpf_get_current_comm(&e->p.ex.comm, sizeof(e->p.ex.comm));
+
+    bpf_ringbuf_submit(e, 0);
+    return 0;
+}

@@ -1,38 +1,42 @@
 #include <iostream>
 #include <memory>
 
-#include "core/loader.h"
-#include "telemetry/TelemetryBundle.h"
-#include "core/Pipeline.h"
-#include "analyzer/cpu/pid_analyzers/ProcessLifecycleAnalyzer.h"
-#include "analyzer/cpu/SchedulerAnalyzer.h"
-#include "common/JsonSerializer.h"
-#include "storage/FileStorage.h"
-#include "publisher/FrontendPublisher.h"
+#include "pipeline/Pipeline.h"
+#include "pipeline/EBPFReader.h"
+#include "analyzer/CpuAnalyzer.h"
+#include "analyzer/SchedulerAnalyzer.h"
+#include "analyzer/ProcessAnalyzer.h"
+#include "intelligence/BayesianBinaryClassifier.h"
+#include "serializer/JsonSerializer.h"
+#include "publisher/LocalStorage.h"
 
 int main()
 {
-    // 1. Central telemetry container
-    TelemetryBundle bundle;
-
-    // 2. Initialize Pipeline
     Pipeline pipeline;
 
-    // 3. Add Analyzers
-    pipeline.addAnalyzer(std::make_unique<ProcessLifecycleAnalyzer>());
-    pipeline.addAnalyzer(std::make_unique<SchedulerAnalyzer>());
+    // Analyzers
+    pipeline.registerAnalyzer(TelemetryType::SchedulerSwitch, std::make_unique<SchedulerAnalyzer>());
+    pipeline.registerAnalyzer(TelemetryType::SchedulerSwitch, std::make_unique<CpuAnalyzer>());
+    pipeline.registerAnalyzer(TelemetryType::ProcessFork, std::make_unique<ProcessAnalyzer>());
+    pipeline.registerAnalyzer(TelemetryType::ProcessExit, std::make_unique<ProcessAnalyzer>());
 
-    // 4. Set Serializer
+    // Intelligence
+    pipeline.setIntelligence(std::make_unique<BayesianBinaryClassifier>());
+
+    // Serializer & Publisher
     pipeline.setSerializer(std::make_unique<JsonSerializer>());
+    pipeline.addPublisher(std::make_unique<LocalStorage>());
 
-    // 5. Add Publishers
-    pipeline.addPublisher(std::make_unique<FileStorage>("JSON"));
-    pipeline.addPublisher(std::make_unique<FrontendPublisher>("JSON"));
+    std::cout << "Starting Ferros Real eBPF Pipeline..." << std::endl;
 
-    // 6. Start eBPF ingestion
-    std::cout << "Starting Ferros Pipeline..." << std::endl;
-    int ret = start_ebpf(bundle, pipeline);
+    EBPFReader reader(pipeline);
+    if (!reader.start()) {
+        std::cerr << "Failed to start eBPF reader\n";
+        return 1;
+    }
 
-    std::cerr << "Program exited with code: " << ret << std::endl;
-    return ret;
+    // reader.start() blocks as it polls the ringbuffer.
+    // If it ever returns, we exit.
+    
+    return 0;
 }
