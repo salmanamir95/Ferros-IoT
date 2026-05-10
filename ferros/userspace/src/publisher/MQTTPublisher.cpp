@@ -95,11 +95,15 @@ void MQTTPublisher::workerLoop() {
         }
 
         if (!client_->is_connected()) {
-            // If not connected, paho-mqtt auto-reconnect handles reconnection, 
-            // but we might want to delay publishing or sleep
+            // Re-enqueue the message to avoid losing it while disconnected
+            {
+                std::unique_lock<std::mutex> lock(queueMutex_);
+                // Push it back. In a real system, you might want a separate retry queue or drop policy,
+                // but for now, just delay and try again.
+                messageQueue_.push(payload); 
+            }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            // To prevent message loss we should ideally re-queue, but dropping might be fine for telemetry
-            // Let's re-enqueue to front to avoid loss if we really care, or just attempt publish which might fail.
+            continue;
         }
 
         try {

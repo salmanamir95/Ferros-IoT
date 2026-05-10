@@ -42,7 +42,7 @@ void MQTTSubscriber::connection_lost(const std::string& cause) {
 
 void MQTTSubscriber::connected(const std::string& cause) {
     std::cout << "[MQTTSubscriber] Connected! Subscribing to " << topic_ << std::endl;
-    client_->subscribe(topic_, qos_)->wait();
+    client_->subscribe(topic_, qos_); // DO NOT wait() inside a callback
 }
 
 void MQTTSubscriber::message_arrived(mqtt::const_message_ptr msg) {
