@@ -26,6 +26,7 @@ private:
 public:
     ScenarioRunner();
     void runOnce();
+    void runScenario(const std::string& name, bool force = true);
 };
 
 } // namespace simulation

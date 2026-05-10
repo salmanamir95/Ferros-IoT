@@ -20,6 +20,9 @@ public:
 
     // Randomly select a scenario
     std::shared_ptr<IScenario> getRandomScenario() const;
+
+    // Get a specific scenario by name
+    std::shared_ptr<IScenario> getScenarioByName(const std::string& name) const;
 };
 
 } // namespace simulation

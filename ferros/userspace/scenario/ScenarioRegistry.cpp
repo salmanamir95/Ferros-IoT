@@ -37,6 +37,15 @@ std::shared_ptr<IScenario> ScenarioRegistry::getRandomScenario() const {
     return scenarios_[dist(gen)];
 }
 
+std::shared_ptr<IScenario> ScenarioRegistry::getScenarioByName(const std::string& name) const {
+    for (const auto& scenario : scenarios_) {
+        if (scenario->getName() == name) {
+            return scenario;
+        }
+    }
+    return nullptr;
+}
+
 } // namespace simulation
 } // namespace ferros
 

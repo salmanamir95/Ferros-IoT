@@ -69,6 +69,25 @@ void ScenarioRunner::runOnce() {
     emitOutput(scenario, system_state);
 }
 
+void ScenarioRunner::runScenario(const std::string& name, bool force) {
+    auto scenario = registry_.getScenarioByName(name);
+    if (!scenario) {
+        std::cerr << "Scenario '" << name << "' not found.\n";
+        return;
+    }
+
+    std::string system_state = "safe";
+
+    // If forcing, bypass safety limits
+    if (!force && !isSystemSafe()) {
+        system_state = "throttled";
+        scenario = std::make_shared<NormalScenario>();
+    }
+
+    scenario->execute();
+    emitOutput(scenario, system_state);
+}
+
 } // namespace simulation
 } // namespace ferros
 
