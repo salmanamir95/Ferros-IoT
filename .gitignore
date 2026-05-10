@@ -24,7 +24,7 @@ datasets/
 data/
 logs/
 log/
-telemetry/
+
 research/output/
 transition_log.json
 
