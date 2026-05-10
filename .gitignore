@@ -84,3 +84,5 @@ yarn-debug.log*
 
 
 **/.env.*
+
+**/output/
