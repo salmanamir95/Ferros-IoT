@@ -1,0 +1,84 @@
+########################################
+# 🚫 BUILD SYSTEM (ALL DEPTHS)
+########################################
+build/
+cmake-build-*/
+out/
+dist/
+target/
+Debug/
+Release/
+
+########################################
+# 🚫 ANY JSON DATA (ALL DEPTHS)
+########################################
+**/*.json
+JSON/
+json/
+*.json
+
+########################################
+# 🚫 DATASETS / TELEMETRY / RESEARCH OUTPUTS
+########################################
+datasets/
+data/
+logs/
+log/
+telemetry/
+research/output/
+transition_log.json
+
+########################################
+# 🚫 COMPILATION OUTPUTS (C/C++)
+########################################
+*.o
+*.so
+*.a
+*.out
+*.elf
+
+########################################
+# 🚫 eBPF GENERATED FILES
+########################################
+*.skel.h
+vmlinux.h
+
+########################################
+# 🚫 CMAKE GENERATED FILES
+########################################
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+########################################
+# 🚫 PYTHON
+########################################
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env/
+
+########################################
+# 🚫 IDE / EDITORS
+########################################
+.vscode/
+.idea/
+*.swp
+*.swo
+
+########################################
+# 🚫 SYSTEM FILES
+########################################
+.DS_Store
+Thumbs.db
+
+########################################
+# 🚫 NODE / FRONTEND (if any dashboards exist)
+########################################
+node_modules/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
