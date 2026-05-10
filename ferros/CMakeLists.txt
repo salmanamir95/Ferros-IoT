@@ -16,6 +16,7 @@ file(MAKE_DIRECTORY ${SKELETON_DIR})
 
 find_library(LIBBPF_LIB bpf REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(PahoMqttCpp REQUIRED)
 
 add_library(shared INTERFACE)
 
@@ -42,6 +43,8 @@ target_link_libraries(ferros
     ${LIBBPF_LIB}
     elf
     z
+    PahoMqttCpp::paho-mqttpp3
+    paho-mqtt3a
 )
 
 add_dependencies(ferros bpf_skel_target)
