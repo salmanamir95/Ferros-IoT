@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useBrokerPolling } from './hooks/useBrokerPolling';
 import { EventFeed } from './components/EventFeed';
 import { MetricsPanel } from './components/MetricsPanel';

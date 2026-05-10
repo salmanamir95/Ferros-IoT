@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FerrosInsight } from '../types/ferros';
+import type { FerrosInsight } from '../types/ferros';
 
 export function useBrokerPolling() {
   const [events, setEvents] = useState<FerrosInsight[]>([]);

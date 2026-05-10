@@ -1,5 +1,4 @@
-import React from 'react';
-import { FerrosInsight } from '../types/ferros';
+import type { FerrosInsight } from '../types/ferros';
 import { Cpu, Activity, Clock, Hash } from 'lucide-react';
 
 interface Props {

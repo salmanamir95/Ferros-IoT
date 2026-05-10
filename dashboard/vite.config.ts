@@ -6,13 +6,13 @@ import path from 'path'
 function ferrosApiPlugin() {
   return {
     name: 'ferros-api',
-    configureServer(server) {
-      server.middlewares.use('/api/insights', (req, res) => {
+    configureServer(server: any) {
+      server.middlewares.use('/api/insights', (_req: any, res: any) => {
         const brokerOutputDir = path.resolve(__dirname, '../Broker/output')
-        const insights = []
+        const insights: any[] = []
 
         // Recursive function to get all JSON files
-        function walkSync(dir) {
+        function walkSync(dir: string) {
           if (!fs.existsSync(dir)) return
           const files = fs.readdirSync(dir)
           for (const file of files) {

@@ -1,5 +1,5 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import { FerrosInsight } from '../types/ferros';
+import { useMemo, useEffect, useState } from 'react';
+import type { FerrosInsight } from '../types/ferros';
 import { Server, Activity, Users, Zap } from 'lucide-react';
 
 interface Props {

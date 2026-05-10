@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { FerrosInsight } from '../types/ferros';
+import { useMemo } from 'react';
+import type { FerrosInsight } from '../types/ferros';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 interface Props {

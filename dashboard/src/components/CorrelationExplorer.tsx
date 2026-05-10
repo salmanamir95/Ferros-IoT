@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { FerrosInsight } from '../types/ferros';
+import { useState, useMemo } from 'react';
+import type { FerrosInsight } from '../types/ferros';
 import { InsightCard } from './InsightCard';
 import { Network, Search } from 'lucide-react';
 

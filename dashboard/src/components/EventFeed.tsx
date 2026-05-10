@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { FerrosInsight } from '../types/ferros';
+import { useEffect, useRef } from 'react';
+import type { FerrosInsight } from '../types/ferros';
 import { InsightCard } from './InsightCard';
 import { motion, AnimatePresence } from 'framer-motion';
 
